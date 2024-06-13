@@ -1,35 +1,39 @@
-import { S3Client } from "@aws-sdk/client-s3";
-import { Request } from "express";
-import "dotenv/config"
-import multer from "multer"
-import multerS3 from 'multer-s3'
-import File from '../models/file'
-import createHttpError from "http-errors";
-const s3 = new S3Client({})
+import { S3Client, PutObjectCommand, S3ServiceException } from '@aws-sdk/client-s3';
+import { arrayBuffer, buffer } from 'stream/consumers';
 
-interface MulterRequest extends Request { id: string }
+// Initialize the S3 client
+const s3 = new S3Client();
 
-const upload = multer({
-  fileFilter: async (req: MulterRequest, file, cb) => {
-    const fileName = file.originalname
-    const fileByFileName = await File.findOne({ fileName: fileName, userId : req.id }).exec()
+// Function to upload a file to S3
+export async function uploadFileToS3(file: File, fileName: string, userId: string): Promise<{key?:string, uploaded?:boolean}> {
+  try {
+    // Uploading files to the bucket
+    const data = await s3.send(new PutObjectCommand({
+      Bucket: process.env.S3_BUCKET, // The name of the bucket
+      Key: `${userId}/${fileName}`, // The file will be saved as userId/originalFileName
+      Body: Buffer.from(await file.arrayBuffer())
+    }));
 
-    if (fileByFileName) {
-      cb(createHttpError(400, "File already exists! delete the existing file if you wanna upload another with same name"))
+    const payload = {
+      key : `${userId}/${fileName}`,
+      uploaded: true
+    }
+    return payload
+
+  } catch (error) {
+    if (error instanceof S3ServiceException) {
+      console.error("error uploading file", error)
+      const payload = {
+      uploaded: false
+    }
+    return payload
+
     } else {
-      cb(null, true)
+      console.error("random error while uploading file", error)
+      const payload = {
+      uploaded: false
     }
-  },
-  storage: multerS3({
-    s3: s3,
-    bucket: process.env.S3_BUCKET!,
-    metadata: function (req, file, cb) {
-      cb(null, { fieldname: file.fieldname });
-    },
-    key: function (req: MulterRequest, file, cb) {
-      cb(null, req.id + "/" + file.originalname);
+    return payload
     }
-  })
-})
-
-export default upload
+  }
+}

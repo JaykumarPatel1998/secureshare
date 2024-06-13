@@ -19,8 +19,8 @@ export function Header() {
       href: '/semanticSearch',
     },
     {
-      name: 'Upload Files',
-      href: '/uploadFiles',
+      name: 'Files',
+      href: '/files',
     }
   ];
 

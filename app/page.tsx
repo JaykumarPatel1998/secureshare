@@ -16,9 +16,7 @@ export default async function Index() {
           <CardDescription>A safe and secure way to store and share files over the cloud. We also provide semantic search for your stored documents.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant={"default"}>
-            <Link href={"/uploadFiles"}>Get Started</Link>
-          </Button>
+            <Link href={"/files"}><Button variant={"default"}>Start uploading</Button></Link>
         </CardContent>
       </Card>
 
