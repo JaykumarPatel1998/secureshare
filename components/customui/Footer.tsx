@@ -12,12 +12,12 @@ export const Footer = () => {
                     </a>
                     <ul className="flex flex-wrap items-center mb-6 sm:mb-0 gap-2">
                         <li>
-                            <Link href={"/"}>
+                            <Link href={"https://github.com/JaykumarPatel1998"}>
                                 <GithubIcon className="h-6 w-6 text-gray-500 hover:text-gray-700" />
                             </Link>
                         </li>
                         <li>
-                            <Link href={"/"}>
+                            <Link href={"https://www.linkedin.com/in/jaykumarpatel1998/"}>
                                 <LucideLinkedin className="h-6 w-6 text-gray-500 hover:text-gray-700" />
                             </Link>
                         </li>

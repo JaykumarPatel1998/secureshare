@@ -7,6 +7,7 @@ import UserModel from "@/models/user";
 import createHttpError from "http-errors";
 import { NextRequest, NextResponse } from "next/server";
 import { decodeJwt } from "@/lib/utils";
+import FileEmbedding from "@/models/fileEmbeddings";
 
 interface ExtendedRequest extends NextRequest {
     id?: string;
@@ -77,19 +78,17 @@ export async function POST(req: ExtendedRequest) {
             await file.save()
 
             // lets implement embedding logic in file embeddings section separately
-            // const filenameArray = fileBody.name.split('.')
-            // if (filenameArray[filenameArray.length - 1] === "pdf") {
-            //     const embedding = await generateEmbeddingFromS3Doc(presignedUrl);
-
-            //     await new FileEmbedding({
-            //         embedding: embedding,
-            //         fileId: file._id,
-            //         userId: requestUserId?.toString()
-            //     }).save()
-            //     console.log("file submitted")
-            // } else {
-            //     console.log('File Embedding failed but uploaded successfully')
-            // }
+            const filenameArray = fileBody.name.split('.')
+            if (filenameArray[filenameArray.length - 1] === "pdf") {
+                const embedding = await generateEmbeddingFromS3Doc(presignedUrl);
+                await new FileEmbedding({
+                    embedding: embedding,
+                    fileId: file._id,
+                    userId: requestUserId?.toString()
+                }).save()
+            } else {
+                console.log('File Embedding failed but uploaded successfully')
+            }
 
             return NextResponse.json({
                 bucket,
