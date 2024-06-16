@@ -35,6 +35,7 @@ interface Data {
   files: File[];
   messages: Message[];
 }
+//manual deployment
 
 const FileList = () => {
   const [data, setData] = useState<Data>({ files: [], messages: [] });
