@@ -14,9 +14,11 @@ import { Button } from '@/components/ui/button';
 import { DeleteIcon, Share2Icon, Trash2Icon } from 'lucide-react';
 import { ShareFile } from '@/components/customui/ShareFile';
 import UploadFile from '@/components/customui/UploadFile';
+import { SkeletonDemo } from '@/components/customui/Skeleton';
 
 interface File {
   bucket: string;
+  _id: string;
   fileName: string;
   key: string;
   size: number;
@@ -60,6 +62,10 @@ const FileList = () => {
     fetchData();
   }, []);
 
+  if (data.files.length === 0) {
+    return <SkeletonDemo />
+  }
+
   return (
     <div className='flex flex-col gap-4'>
       <div>
@@ -95,7 +101,7 @@ const FileList = () => {
                 </TableCell>
 
                 <TableCell>
-                  <ShareFile />
+                  <ShareFile file={file} />
                 </TableCell>
 
                 <TableCell>

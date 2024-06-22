@@ -3,6 +3,7 @@ import { Header } from "@/components/customui/Header";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Footer } from "@/components/customui/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 
 export const metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({
             <div className="flex justify-center w-full items-center p-5">
               {children}
             </div>
+            <Toaster />
             
             <Footer/>
 

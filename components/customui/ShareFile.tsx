@@ -13,7 +13,63 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
-export function ShareFile() {
+import React, { useState } from 'react';
+import { useToast } from "../ui/use-toast"
+
+interface File {
+  _id: string;
+  bucket: string;
+  fileName: string;
+  key: string;
+  size: number;
+  fileUrl: string;
+  userId: string;
+  urlExpiryDate: Date;
+}
+
+export function ShareFile({ file }: { file: File }) {
+  const [username, setUsername] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [response, setResponse] = useState(null);
+  const {toast} = useToast()
+
+  const handlePostRequest = async () => {
+    try {
+      const res = await fetch('/api/file/share', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          expiry,
+          username,
+          fileId: file._id,
+        }),
+      });
+      const data = await res.json();
+      setResponse(data);
+
+      if (data.status === 400){
+        toast({
+          variant: "destructive",
+          title: "Share failed",
+          description: data.message,
+        })
+      }
+      if (data.status === 200) {
+        toast({
+          variant: "default",
+          title: "Shared",
+          description: "Your file is shared with the user",
+        })
+      }
+      
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -21,31 +77,35 @@ export function ShareFile() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
+          <SheetTitle>Share File</SheetTitle>
           <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
+            <pre>
+            File Name: {file.fileName}<br/>
+            File Size: {file.size}<br/>
+            </pre>
+            
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
               Username
             </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
+            <Input id="username" value={username} onChange={e => setUsername(e.target.value)} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expiry" className="text-right">
+              Expiry (in min)
+            </Label>
+            <Input id="expiry" value={expiry} onChange={e => setExpiry(e.target.value)} className="col-span-3" />
           </div>
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" onClick={handlePostRequest}>Share</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

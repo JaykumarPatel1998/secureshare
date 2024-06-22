@@ -15,12 +15,12 @@ export function Header() {
       icon: () => <CpuIcon className="h-6 w-6" />,
     },
     {
-      name: 'Semantic Search',
-      href: '/semanticSearch',
-    },
-    {
       name: 'Files',
       href: '/files',
+    },
+    {
+      name: 'Messages',
+      href: '/messages',
     }
   ];
 
