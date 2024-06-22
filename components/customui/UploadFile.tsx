@@ -28,7 +28,7 @@ const UploadFile = () => {
     if (!file) {
       setUploadError({ message: 'Please select a file to upload.' });
       return;
-    }
+    }  
 
     setIsLoading('uploading');
     setUploadError(null);
@@ -65,7 +65,7 @@ const UploadFile = () => {
   }, []);
 
   return (
-    <form className="grid w-full max-w-sm items-center gap-1.5">
+    <form className="grid w-full max-w-sm items-center gap-1.5" onSubmit={handleSubmit}>
       <Label htmlFor="file">Upload a file</Label>
       <Input id='file' name='file' type="file" onChange={handleFileChange} />
       <Button type="submit" disabled={isLoading === 'uploading'}>
