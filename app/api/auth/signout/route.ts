@@ -16,8 +16,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
         } else if(token) {
             cookies().delete('token')
         }
+        return NextResponse.redirect(new URL('/signin', req.url))
     } catch (err) {
-        throw createHttpError(500, "Internal Server Error")
+        return NextResponse.json({error: "Internal Server Error", statusCode: 500})
     }
-    redirect('/signin')
 }

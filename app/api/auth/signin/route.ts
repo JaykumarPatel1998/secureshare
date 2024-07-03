@@ -1,12 +1,12 @@
 import User from '@/models/user'
 import RefreshToken, {RefreshTokenType} from "@/models/refreshToken";
 import bcrypt from 'bcryptjs'
-import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
 import { connect } from '@/dbConfig/dbConfig';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import Error from 'next/error';
 
 interface SignInDto {
     username: string;
@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
     try {
         const user = await User.findOne({ username: username }).exec()
         if (!user) {
-            throw createHttpError(404, "User not found")
+            // return NextResponse.json({error: "User not found"})
+            return NextResponse.json({error: "User not found", statusCode: 404})
         }
 
         const passwordIsValid = bcrypt.compareSync(
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest) {
         );
 
         if (!passwordIsValid) {
-            throw createHttpError(401, "Unauthorized: Incorrect password")
+            return NextResponse.json({error: "Unauthorized: Incorrect username or password", statusCode: 401})
         }
 
         const token = jwt.sign({ sub : user._id }, process.env.JWT_SECRET!, {
@@ -51,11 +52,10 @@ export async function POST(req: NextRequest) {
             sameSite: 'lax'
         })
 
-        // return NextResponse.redirect(new URL('/', req.url))
+        return NextResponse.redirect(new URL('/', req.url))
 
     } catch (error) {
         console.log(error)
-        throw createHttpError(500, "Internal Server Error")
+        NextResponse.json({error: "Internal Server Error", statusCode: 500})
     }
-    redirect("/")
 }

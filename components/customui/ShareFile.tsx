@@ -73,7 +73,7 @@ export function ShareFile({ file }: { file: File }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="outline">Share</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -81,7 +81,7 @@ export function ShareFile({ file }: { file: File }) {
           <SheetDescription>
             <pre>
             File Name: {file.fileName}<br/>
-            File Size: {file.size}<br/>
+            File Size: {file.size} bytes<br/>
             </pre>
             
           </SheetDescription>
@@ -89,15 +89,15 @@ export function ShareFile({ file }: { file: File }) {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Username
+              with
             </Label>
-            <Input id="username" value={username} onChange={e => setUsername(e.target.value)} className="col-span-3" />
+            <Input id="username" value={username} placeholder="friend's username" onChange={e => setUsername(e.target.value)} className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="expiry" className="text-right">
               Expiry (in min)
             </Label>
-            <Input id="expiry" value={expiry} onChange={e => setExpiry(e.target.value)} className="col-span-3" />
+            <Input id="expiry" value={expiry} placeholder="10" onChange={e => setExpiry(e.target.value)} className="col-span-3" />
           </div>
         </div>
         <SheetFooter>

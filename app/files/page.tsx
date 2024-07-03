@@ -42,6 +42,7 @@ interface Data {
 const FileList = () => {
   const [data, setData] = useState<Data>({ files: [], messages: [] });
   const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +55,7 @@ const FileList = () => {
         console.log(result)
         setData({ files: result.files, messages: result.messages });
         setUnreadCount(result.messages.filter((msg: Message) => !msg.read).length);
+        setIsLoading(false);
       } catch (error) {
         console.error('Fetch error:', error);
       }
@@ -62,26 +64,26 @@ const FileList = () => {
     fetchData();
   }, []);
 
-  if (data.files.length === 0) {
+  if (isLoading) {
     return <SkeletonDemo />
   }
 
   return (
     <div className='flex flex-col gap-4'>
-      <div>
+      {/* <div>
         <h2>Unread Messages Count: {unreadCount}</h2>
-      </div>
+      </div> */}
       <UploadFile />
       <div className='max-w-[350px] sm:max-w-[600px] md:max-w-[800px] overflow-auto'>
         <Table>
-          <TableCaption>your files.</TableCaption>
+          <TableCaption>your files will appear here.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>File Name</TableHead>
               <TableHead>Size</TableHead>
               <TableHead>Download</TableHead>
               <TableHead>Share</TableHead>
-              <TableHead>Delete</TableHead>
+              {/* <TableHead>Delete</TableHead> */}
               <TableHead>Expiry Date</TableHead>
             </TableRow>
           </TableHeader>
@@ -104,11 +106,11 @@ const FileList = () => {
                   <ShareFile file={file} />
                 </TableCell>
 
-                <TableCell>
+                {/* <TableCell>
                   <Link href={file.fileUrl} target="_blank" rel="noopener noreferrer">
                     <Trash2Icon />
                   </Link>
-                </TableCell>
+                </TableCell> */}
 
                 <TableCell>{file.urlExpiryDate.toLocaleString()}</TableCell>
               </TableRow>

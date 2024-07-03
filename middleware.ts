@@ -22,7 +22,7 @@ export async function middleware(request: ExtendedRequest) {
 
     if (publicPath) {
         return NextResponse.next()
-    }
+    } 
 
     if ((token && refreshToken) && (path === ('/api/auth/refreshToken'))) {
         return NextResponse.next()
@@ -67,6 +67,8 @@ export const config = {
         '/api/auth/:path',
         '/signin',
         '/signup',
-        '/'
+        '/',
+        '/files',
+        '/messages'
     ],
 }

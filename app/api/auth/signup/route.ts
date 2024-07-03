@@ -27,12 +27,12 @@ export async function POST(req: NextRequest) {
     try {
         const userByUsername = await User.findOne({ username: username }).exec()
         if (userByUsername) {
-            throw createHttpError(400, "username already exists")
+            return NextResponse.json({error: "username already exists", statusCode: 400})
         }
 
         const userByEmail = await User.findOne({ email: email }).exec()
         if (userByEmail) {
-            throw createHttpError(400, "email already taken")
+            return NextResponse.json({error: "email already taken", statusCode: 400})
         }
 
         const newUser = new User({
@@ -45,9 +45,9 @@ export async function POST(req: NextRequest) {
         });
 
         await newUser.save();
+        return NextResponse.redirect(new URL('/signin', req.url))
     } catch (error) {
         console.log(error)
-        throw createHttpError(500, "Internal Server Error")
+        return NextResponse.json({error: "User not found", statusCode: 404})
     }
-    return redirect('/signin')
 }
